@@ -1,3 +1,5 @@
+const list = [];
+
 const img = document.getElementById("img");
 const title = document.getElementById("title");
 const price = document.getElementById("price");
@@ -7,11 +9,8 @@ const quantity = document.getElementById("quantity");
 const paths = document.location.href.split("id=")[1];
 const addToCart = document.getElementById("addToCart");
 
-let list = [];
-
 function getItem() {
   getProducts().then((data) => {
-
     function findItem(product) {
       return product._id === paths;
     }
@@ -36,16 +35,32 @@ function getItem() {
 getItem();
 
 addToCart.addEventListener("click", function () {
-  const data = {
-    productId: paths,
-    quantity: quantity.value,
-    dataColor: select.value,
-  };
+  if (localStorage.getItem("list")) {
+    const localStorageBefore = JSON.parse(localStorage.getItem("list"));
 
-  list.push(data);
+    const [product] = localStorageBefore;
 
-  localStorage.setItem("list", JSON.stringify(list));
+    console.log(product);
+    const data = {
+      productId: paths,
+      quantity: quantity.value,
+      dataColor: select.value,
+    };
 
-  console.log(list);
+    list.push(data);
+    let newList = list.concat(localStorageBefore);
+    localStorage.setItem("list", JSON.stringify(newList));
+  } else {
+    const data = {
+      productId: paths,
+      quantity: quantity.value,
+      dataColor: select.value,
+    };
+
+    list.push(data);
+
+    localStorage.setItem("list", JSON.stringify(list));
+  }
 });
 
+console.log(list);
