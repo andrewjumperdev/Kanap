@@ -1,4 +1,5 @@
 const list = JSON.parse(localStorage.getItem("list"));
+const url = "http://127.0.0.1:3000/api/products";
 
 const totalQuantity = document.getElementById("totalQuantity");
 const totalPrice = document.getElementById("totalPrice");
@@ -10,8 +11,9 @@ const city = document.getElementById("city");
 const email = document.getElementById("email");
 const orderButton = document.getElementById("order");
 
+
 function getProductsCart() {
-  getProducts().then((items) => {
+  getProducts(url).then((items) => {
     for (let i = 0; i < list.length; i++) {
       // Creating Elements
       const element = list[i];
@@ -28,9 +30,9 @@ function getProductsCart() {
       const cartItemContentSettings = document.createElement("div");
       const cartItemContentSettingsQuantity = document.createElement("div");
       const quantity = document.createElement("p");
-      const inputQuantity = document.createElement("input");
       const cartItemContentSettingsDelete = document.createElement("div");
       const deleteItem = document.createElement("p");
+      const inputQuantity = document.createElement("input");
 
       // Banding Elements
       cartItems.append(cartItem);
@@ -73,11 +75,13 @@ function getProductsCart() {
         "cart__item__content__settings__delete"
       );
       inputQuantity.setAttribute("class", "itemQuantity");
+      inputQuantity.setAttribute("id", "itemQuantity");
       inputQuantity.setAttribute("type", "number");
       inputQuantity.setAttribute("min", 1);
       inputQuantity.setAttribute("max", 100);
       inputQuantity.setAttribute("value", list[i].quantity);
       deleteItem.setAttribute("class", "deleteItem");
+      deleteItem.setAttribute("onclick", "deleteItem()");
 
       // Set Values
       h2.innerText = result.name;
@@ -86,19 +90,30 @@ function getProductsCart() {
       quantity.innerText = "Qté :";
       deleteItem.innerText = "Supprimer";
 
-      deleteItem.addEventListener('click', (e) => {
-          e.preventDefault();
+      // deleteItem.addEventListener("click", (e) => {
+      //  e.preventDefault();
+      // Actualizar el DOM
+      //  });
 
-          
+      document.body.addEventListener('change', (e) => {
 
+        e.preventDefault();
+      
+        let qte = document.getElementById("itemQuantity");
+      
+        console.log(qte.getAttribute('value'));
+      
       });
+      
     }
   });
 }
 
+
+
 getProductsCart();
 
-document.addEventListener("submit", function (event) {
+document.addEventListener("submit",  (event) => {
   event.preventDefault();
 
   const command = {

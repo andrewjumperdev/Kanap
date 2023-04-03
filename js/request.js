@@ -1,6 +1,4 @@
-const url = "http://127.0.0.1:3000/api/products";
-
-function getProducts() {
+function getProducts(url) {
   return fetch(url)
     .then((res) => {
       if (res.ok) {

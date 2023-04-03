@@ -1,4 +1,6 @@
 const list = [];
+const params = new URLSearchParams(document.location.search);
+const url = `http://127.0.0.1:3000/api/products/${params.get("id")}`;
 
 const img = document.getElementById("img");
 const title = document.getElementById("title");
@@ -6,29 +8,21 @@ const price = document.getElementById("price");
 const description = document.getElementById("description");
 const select = document.getElementById("colors");
 const quantity = document.getElementById("quantity");
-const paths = document.location.href.split("id=")[1];
 const addToCart = document.getElementById("addToCart");
 
 function getItem() {
-  getProducts().then((data) => {
-    function findItem(product) {
-      return product._id === paths;
-    }
+  getProducts(url).then((data) => {
 
-    const item = data.find((item) => findItem(item));
-
-    for (value in item.colors) {
+    for (value in data.colors) {
       let option = document.createElement("option");
-      option.text = item.colors[value];
+      option.text = data.colors[value];
       select.add(option);
     }
 
-    title.innerText = item.name;
-    price.innerText = item.price;
-    description.innerText = item.description;
-    img.setAttribute("src", item.imageUrl);
-
-    return item;
+    title.innerText = data.name;
+    price.innerText = data.price;
+    description.innerText = data.description;
+    img.setAttribute("src", data.imageUrl);
   });
 }
 
@@ -42,7 +36,7 @@ addToCart.addEventListener("click", function () {
 
     console.log(product);
     const data = {
-      productId: paths,
+      productId: params.get("id"),
       quantity: quantity.value,
       dataColor: select.value,
     };
@@ -52,7 +46,7 @@ addToCart.addEventListener("click", function () {
     localStorage.setItem("list", JSON.stringify(newList));
   } else {
     const data = {
-      productId: paths,
+      productId: params.get("id"),
       quantity: quantity.value,
       dataColor: select.value,
     };

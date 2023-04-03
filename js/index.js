@@ -1,6 +1,6 @@
+const url = "http://127.0.0.1:3000/api/products";
 
-
-const products =  getProducts().then(products => {
+const products =  getProducts(url).then(products => {
     products.map((item) => {
         /* Creating the elements*/
         const section = document.getElementById("items");
