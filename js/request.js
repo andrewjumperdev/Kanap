@@ -9,3 +9,4 @@ function getProducts(url) {
       return data;
     });
 }
+

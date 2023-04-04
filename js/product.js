@@ -10,31 +10,22 @@ const select = document.getElementById("colors");
 const quantity = document.getElementById("quantity");
 const addToCart = document.getElementById("addToCart");
 
-function getItem() {
-  getProducts(url).then((data) => {
+getProducts(url).then((data) => {
+  for (value in data.colors) {
+    let option = document.createElement("option");
+    option.text = data.colors[value];
+    select.add(option);
+  }
 
-    for (value in data.colors) {
-      let option = document.createElement("option");
-      option.text = data.colors[value];
-      select.add(option);
-    }
+  title.innerText = data.name;
+  price.innerText = data.price;
+  description.innerText = data.description;
+  img.setAttribute("src", data.imageUrl);
+});
 
-    title.innerText = data.name;
-    price.innerText = data.price;
-    description.innerText = data.description;
-    img.setAttribute("src", data.imageUrl);
-  });
-}
-
-getItem();
-
-addToCart.addEventListener("click", function () {
+addToCart.addEventListener("click", () => {
   if (localStorage.getItem("list")) {
     const localStorageBefore = JSON.parse(localStorage.getItem("list"));
-
-    const [product] = localStorageBefore;
-
-    console.log(product);
     const data = {
       productId: params.get("id"),
       quantity: quantity.value,
@@ -56,5 +47,3 @@ addToCart.addEventListener("click", function () {
     localStorage.setItem("list", JSON.stringify(list));
   }
 });
-
-console.log(list);
