@@ -24,8 +24,10 @@ getProducts(url).then((data) => {
 });
 
 addToCart.addEventListener("click", () => {
+
   if (localStorage.getItem("list")) {
-    const localStorageBefore = JSON.parse(localStorage.getItem("list"));
+    let lst = localStorage.getItem("list") 
+    const localStorageBefore = JSON.parse(lst);
     const data = {
       productId: params.get("id"),
       quantity: quantity.value,

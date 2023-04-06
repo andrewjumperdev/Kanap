@@ -10,10 +10,13 @@ const address = document.getElementById("address");
 const city = document.getElementById("city");
 const email = document.getElementById("email");
 const orderButton = document.getElementById("order");
+const totalsQuantity = []
+const totalPrices = []
 
 getProducts(url).then((items) => {
   for (let i = 0; i < list.length; i++) {
     // Creating Elements
+    
     const element = list[i];
     const result = items.find((item) => item._id === element.productId);
     const cartItems = document.getElementById("cart__items");
@@ -27,10 +30,10 @@ getProducts(url).then((items) => {
     const cartItemContentDescription = document.createElement("div");
     const cartItemContentSettings = document.createElement("div");
     const cartItemContentSettingsQuantity = document.createElement("div");
+    const inputQuantity = document.createElement("input");
     const quantity = document.createElement("p");
     const cartItemContentSettingsDelete = document.createElement("div");
-    const deleteItem = document.createElement("p");
-    const inputQuantity = document.createElement("input");
+    const deleteItem = document.createElement("p");    
 
     // Banding Elements
     cartItems.append(cartItem);
@@ -79,7 +82,6 @@ getProducts(url).then((items) => {
     inputQuantity.setAttribute("max", 100);
     inputQuantity.setAttribute("value", list[i].quantity);
     deleteItem.setAttribute("class", "deleteItem");
-    deleteItem.setAttribute("onclick", "deleteItem()");
 
     // Set Values
     h2.innerText = result.name;
@@ -88,12 +90,56 @@ getProducts(url).then((items) => {
     quantity.innerText = "Qté :";
     deleteItem.innerText = "Supprimer";
 
-    // deleteItem.addEventListener("click", (e) => {
-    //  e.preventDefault();
-    // Actualizar el DOM
-    //  });
+    const priceItem = p2.innerText;
+    const priceProduct = parseInt(priceItem.slice(0, -1))
+
+    totalPrices.push(priceProduct)
+
+    const sumaPrices  = totalPrices.reduce((anterior, actual) => anterior + actual, 0);
+
+    console.log(sumaPrices)
+
+    totalPrice.innerText = sumaPrices
+
+    const numValue = inputQuantity.getAttribute("value");
+    
+    const num = parseInt(numValue);
+
+    totalsQuantity.push(num)
+
+    const suma  = totalsQuantity.reduce((anterior, actual) => anterior + actual, 0);
+
+    totalQuantity.innerText = suma
+
+    inputQuantity.addEventListener('focusout' ,(e) => {
+      e.preventDefault()
+
+      const numValue = inputQuantity.getAttribute("value");
+    
+      const num = parseInt(numValue);
+  
+      totalsQuantity.push(num)
+      
+      const suma  = totalsQuantity.reduce((anterior, actual) => anterior + actual, 0);
+      console.log(suma)
+      totalQuantity.innerText = suma
+    })
+
+    deleteItem.addEventListener("click", (e) => {
+      e.preventDefault();
+        const lst = localStorage.getItem('list');
+        const parseLst = JSON.parse(lst);
+        const id = cartItem.getAttribute("data-id");
+        const newList = parseLst.filter(item =>
+          item.productId != id
+        )
+        localStorage.setItem('list', JSON.stringify(newList))
+        location.reload();
+      });   
   }
+  
 });
+
 
 document.addEventListener("submit", (e) => {
   e.preventDefault();
