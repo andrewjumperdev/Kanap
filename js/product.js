@@ -9,6 +9,12 @@ const description = document.getElementById("description");
 const select = document.getElementById("colors");
 const quantity = document.getElementById("quantity");
 const addToCart = document.getElementById("addToCart");
+const errMsgContainer = quantity.parentElement;
+const errMsg =  document.createElement('p');
+
+errMsgContainer.append(errMsg);
+
+errMsg.setAttribute('style', 'color:red')
 
 getProducts(url).then((data) => {
   for (value in data.colors) {
@@ -16,18 +22,25 @@ getProducts(url).then((data) => {
     option.text = data.colors[value];
     select.add(option);
   }
-
   title.innerText = data.name;
   price.innerText = data.price;
   description.innerText = data.description;
   img.setAttribute("src", data.imageUrl);
 });
 
-addToCart.addEventListener("click", () => {
+quantity.addEventListener('focusout', () => {
+  const qty = parseInt(quantity.value) 
+  console.log(qty)
+  if(qty > 100 || qty === 0) {
+    errMsg.innerText = '100 est le nombre maximal de produits'
+  }  
+})
 
+addToCart.addEventListener("click", () => {
   if (localStorage.getItem("list")) {
-    let lst = localStorage.getItem("list") 
+    let lst = localStorage.getItem("list");
     const localStorageBefore = JSON.parse(lst);
+
     const data = {
       productId: params.get("id"),
       quantity: quantity.value,
@@ -43,9 +56,7 @@ addToCart.addEventListener("click", () => {
       quantity: quantity.value,
       dataColor: select.value,
     };
-
     list.push(data);
-
     localStorage.setItem("list", JSON.stringify(list));
   }
 });

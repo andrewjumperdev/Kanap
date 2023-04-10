@@ -1,4 +1,5 @@
 const list = JSON.parse(localStorage.getItem("list"));
+
 const url = "http://127.0.0.1:3000/api/products";
 
 const totalQuantity = document.getElementById("totalQuantity");
@@ -9,14 +10,19 @@ const lastName = document.getElementById("lastName");
 const address = document.getElementById("address");
 const city = document.getElementById("city");
 const email = document.getElementById("email");
+const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
+const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
+const errMsjEmail = document.getElementById("emailErrorMsg");
+const addressErrorMsg = document.getElementById("addressErrorMsg");
+
 const orderButton = document.getElementById("order");
-const totalsQuantity = []
-const totalPrices = []
+const totalsQuantity = [];
+const totalPrices = [];
+  
 
 getProducts(url).then((items) => {
-  for (let i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) {   
     // Creating Elements
-    
     const element = list[i];
     const result = items.find((item) => item._id === element.productId);
     const cartItems = document.getElementById("cart__items");
@@ -33,7 +39,7 @@ getProducts(url).then((items) => {
     const inputQuantity = document.createElement("input");
     const quantity = document.createElement("p");
     const cartItemContentSettingsDelete = document.createElement("div");
-    const deleteItem = document.createElement("p");    
+    const deleteItem = document.createElement("p");
 
     // Banding Elements
     cartItems.append(cartItem);
@@ -91,60 +97,93 @@ getProducts(url).then((items) => {
     deleteItem.innerText = "Supprimer";
 
     const priceItem = p2.innerText;
-    const priceProduct = parseInt(priceItem.slice(0, -1))
+    let priceProduct = parseInt(priceItem.slice(0, -1));
+    const prices = () => {
+      const qty = inputQuantity.getAttribute("value");
+      const number = parseInt(qty);
+      if (number > 1) {
+        priceProduct = priceProduct * number;
+        totalPrices.push(priceProduct);
+      } else {
+        totalPrices.push(priceProduct);
+      }
+      const sumaPrices = totalPrices.reduce(
+        (anterior, actual) => anterior + actual,
+        0
+      );
+      totalPrice.innerText = sumaPrices;
+    };
 
-    totalPrices.push(priceProduct)
-
-    const sumaPrices  = totalPrices.reduce((anterior, actual) => anterior + actual, 0);
-
-    console.log(sumaPrices)
-
-    totalPrice.innerText = sumaPrices
+    prices();
 
     const numValue = inputQuantity.getAttribute("value");
-    
+
     const num = parseInt(numValue);
 
-    totalsQuantity.push(num)
+    totalsQuantity.push(num);
 
-    const suma  = totalsQuantity.reduce((anterior, actual) => anterior + actual, 0);
+    const suma = totalsQuantity.reduce(
+      (anterior, actual) => anterior + actual,
+      0
+    );
 
-    totalQuantity.innerText = suma
+    totalQuantity.innerText = suma;
 
-    inputQuantity.addEventListener('focusout' ,(e) => {
-      e.preventDefault()
+    inputQuantity.addEventListener("focusout", (e) => {
+      e.preventDefault();
 
       const numValue = inputQuantity.getAttribute("value");
-    
+
       const num = parseInt(numValue);
-  
-      totalsQuantity.push(num)
-      
-      const suma  = totalsQuantity.reduce((anterior, actual) => anterior + actual, 0);
-      console.log(suma)
-      totalQuantity.innerText = suma
-    })
+
+      totalsQuantity.push(num);
+
+      const suma = totalsQuantity.reduce(
+        (anterior, actual) => anterior + actual,
+        0
+      );
+      totalQuantity.innerText = suma;
+    });
 
     deleteItem.addEventListener("click", (e) => {
       e.preventDefault();
-        const lst = localStorage.getItem('list');
-        const parseLst = JSON.parse(lst);
-        const id = cartItem.getAttribute("data-id");
-        const newList = parseLst.filter(item =>
-          item.productId != id
-        )
-        localStorage.setItem('list', JSON.stringify(newList))
-        location.reload();
-      });   
+      const lst = localStorage.getItem("list");
+      const parseLst = JSON.parse(lst);
+      const id = cartItem.getAttribute("data-id");
+      const newList = parseLst.filter((item) => item.productId != id);
+      localStorage.setItem("list", JSON.stringify(newList));
+      location.reload();
+    });
   }
-  
 });
-
 
 document.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const command = {
+  let expRegMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  let enter = false;
+
+  if (firstName.value === null || firstName.value === "") {
+    firstNameErrorMsg.innerText = `Le prenom n'est pas valide`;
+    enter = true;
+  }
+  if (lastName.value === null || lastName.value === "") {
+    lastNameErrorMsg.innerText = `Le nom n'est pas valide`;
+    enter = true;
+  }
+  if (address.value === null || address.value === "") {
+    addressErrorMsg.innerText = `Le adress n'est pas valide`;
+    enter = true;
+  }
+  if (city.value === null || city.value === "") {
+    cityErrorMsg.innerText = `Le city n'est pas valide`;
+    enter = true;
+  }
+  if (!expRegMail.test(email.value)) {
+    errMsjEmail.innerText = `L'email n'est pas valide`;
+    enter = true;
+  }
+  const contact = {
     firstName: firstName.value,
     lastName: lastName.value,
     address: address.value,
@@ -152,14 +191,28 @@ document.addEventListener("submit", (e) => {
     email: email.value,
   };
 
+  const products = [];
 
-  () => {
-    fetch('http://127.0.0.1:3000/api/order'), {
-      method: 'POST',
-      body: command,
-    }
-  }
+  list.forEach((element) => {
+    products.push(element.productId);
+  });
 
+  const orderUrl = "http://localhost:3000/api/products/order";
 
-  console.log(command);
+  const orderID = fetch(orderUrl, {
+    mode: "cors",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    Origin: "http://localhost:3000",
+    body: JSON.stringify({ contact, products }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      const order = data.orderId;
+      if (!enter) {
+        window.location.href = `./confirmation.html?order=${order}`;
+      }
+    });
 });
