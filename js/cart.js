@@ -1,10 +1,7 @@
 const list = JSON.parse(localStorage.getItem("list"));
-
 const url = "http://127.0.0.1:3000/api/products";
-
 const totalQuantity = document.getElementById("totalQuantity");
 const totalPrice = document.getElementById("totalPrice");
-
 const firstName = document.getElementById("firstName");
 const lastName = document.getElementById("lastName");
 const address = document.getElementById("address");
@@ -14,14 +11,14 @@ const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
 const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
 const errMsjEmail = document.getElementById("emailErrorMsg");
 const addressErrorMsg = document.getElementById("addressErrorMsg");
-
+const form = document.querySelector(".cart__order__form");
 const orderButton = document.getElementById("order");
 const totalsQuantity = [];
 const totalPrices = [];
-  
 
 getProducts(url).then((items) => {
-  for (let i = 0; i < list.length; i++) {   
+  for (let i = 0; i < list.length; i++) {
+    console.log();
     // Creating Elements
     const element = list[i];
     const result = items.find((item) => item._id === element.productId);
@@ -59,7 +56,7 @@ getProducts(url).then((items) => {
 
     // Set Attr
     cartItem.setAttribute("data-id", result._id);
-    cartItem.setAttribute("data-color", result.dataColor);
+    cartItem.setAttribute("data-color", list[i].dataColor);
     cartItem.setAttribute("class", "cart__item");
     cartItemImg.setAttribute("class", "cart__item__img");
     img.setAttribute("src", result.imageUrl);
@@ -98,6 +95,7 @@ getProducts(url).then((items) => {
 
     const priceItem = p2.innerText;
     let priceProduct = parseInt(priceItem.slice(0, -1));
+
     const prices = () => {
       const qty = inputQuantity.getAttribute("value");
       const number = parseInt(qty);
@@ -116,24 +114,15 @@ getProducts(url).then((items) => {
 
     prices();
 
-    const numValue = inputQuantity.getAttribute("value");
+    itemQuantity.addEventListener("change", (e) => {
+      prices();
+    });
 
-    const num = parseInt(numValue);
+    quantityValidation(itemQuantity);
 
-    totalsQuantity.push(num);
-
-    const suma = totalsQuantity.reduce(
-      (anterior, actual) => anterior + actual,
-      0
-    );
-
-    totalQuantity.innerText = suma;
-
-    inputQuantity.addEventListener("focusout", (e) => {
-      e.preventDefault();
-
+    // Creando Funtion counter
+    let totlqty = () => {
       const numValue = inputQuantity.getAttribute("value");
-
       const num = parseInt(numValue);
 
       totalsQuantity.push(num);
@@ -142,47 +131,49 @@ getProducts(url).then((items) => {
         (anterior, actual) => anterior + actual,
         0
       );
+
       totalQuantity.innerText = suma;
-    });
+
+      inputQuantity.addEventListener("change", (e) => {
+        e.preventDefault();
+        let oldTotal = parseInt(numValue);
+        let inputQty = document.getElementById("itemQuantity").value;
+        let num = parseInt((newTotal = inputQty));
+        if (num < oldTotal) {
+          console.log("restado");
+          console.log(oldTotal - num);
+          console.log(totalQuantity);
+          const input = document.getElementById("itemQuantity");
+          input.setAttribute("value", num);
+        } else {
+          let newNumber = num;
+          let newTotalQuantity = parseInt(totalQuantity.innerText) - oldTotal;
+          let NewResult = newTotalQuantity + newNumber;
+          totalQuantity.innerText = NewResult;
+        }
+      });
+    };
+
+    totlqty();
 
     deleteItem.addEventListener("click", (e) => {
       e.preventDefault();
       const lst = localStorage.getItem("list");
       const parseLst = JSON.parse(lst);
-      const id = cartItem.getAttribute("data-id");
-      const newList = parseLst.filter((item) => item.productId != id);
+      const color = cartItem.getAttribute("data-color");
+      const newList = parseLst.filter((item) => item.dataColor !== color);
+      console.log(newList);
+
       localStorage.setItem("list", JSON.stringify(newList));
       location.reload();
     });
   }
 });
 
+validation(firstName, lastName, address, city, email);
+
 document.addEventListener("submit", (e) => {
   e.preventDefault();
-
-  let expRegMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  let enter = false;
-
-  if (firstName.value === null || firstName.value === "") {
-    firstNameErrorMsg.innerText = `Le prenom n'est pas valide`;
-    enter = true;
-  }
-  if (lastName.value === null || lastName.value === "") {
-    lastNameErrorMsg.innerText = `Le nom n'est pas valide`;
-    enter = true;
-  }
-  if (address.value === null || address.value === "") {
-    addressErrorMsg.innerText = `Le adress n'est pas valide`;
-    enter = true;
-  }
-  if (city.value === null || city.value === "") {
-    cityErrorMsg.innerText = `Le city n'est pas valide`;
-    enter = true;
-  }
-  if (!expRegMail.test(email.value)) {
-    errMsjEmail.innerText = `L'email n'est pas valide`;
-    enter = true;
-  }
   const contact = {
     firstName: firstName.value,
     lastName: lastName.value,
@@ -199,7 +190,7 @@ document.addEventListener("submit", (e) => {
 
   const orderUrl = "http://localhost:3000/api/products/order";
 
-  const orderID = fetch(orderUrl, {
+  const orderId = fetch(orderUrl, {
     mode: "cors",
     method: "POST",
     headers: {
@@ -211,8 +202,6 @@ document.addEventListener("submit", (e) => {
     .then((res) => res.json())
     .then((data) => {
       const order = data.orderId;
-      if (!enter) {
-        window.location.href = `./confirmation.html?order=${order}`;
-      }
+      window.location.href = `./confirmation.html?order=${order}`;
     });
 });
