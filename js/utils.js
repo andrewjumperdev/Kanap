@@ -1,3 +1,16 @@
+// Request
+const getProducts = (url) => {
+  return fetch(url)
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then((data) => {
+      return data;
+    });
+};
+
 // Form Validation
 const validation = (name, last, address, city, email) => {
   const expRegMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -45,15 +58,14 @@ const validation = (name, last, address, city, email) => {
 };
 
 // Input Validation
-
-const quantityValidation = (input) => {
+const alertValidation = (input, msj) => {
   input.addEventListener("change", () => {
     if (input.value > 100) {
       const errMsgContainer = input.parentElement;
       const errMsg = document.createElement("p");
       errMsgContainer.append(errMsg);
-      errMsg.setAttribute("style", "color:red");
-      errMsg.innerHTML = " Quantité maximale 100!";
+      errMsg.setAttribute("style", "color:white");
+      errMsg.innerHTML = msj;
     } else {
       delete alert;
     }

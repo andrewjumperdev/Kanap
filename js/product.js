@@ -22,7 +22,8 @@ getProducts(url).then((data) => {
   img.setAttribute("src", data.imageUrl);
 });
 
-quantityValidation(quantity);
+alertValidation(quantity, "La quantité est comprise entre 1 et 100!");
+
 
 addToCart.addEventListener("click", () => {
   const data = {

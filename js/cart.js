@@ -1,5 +1,7 @@
 const list = JSON.parse(localStorage.getItem("list"));
 const url = "http://127.0.0.1:3000/api/products";
+const cardForm = document.querySelector('.cart');
+const cartContainer = document.getElementById('cartAndFormContainer');
 const totalQuantity = document.getElementById("totalQuantity");
 const totalPrice = document.getElementById("totalPrice");
 const firstName = document.getElementById("firstName");
@@ -118,40 +120,43 @@ getProducts(url).then((items) => {
       prices();
     });
 
-    quantityValidation(itemQuantity);
+    alertValidation(itemQuantity, "La quantité est comprise entre 1 et 100!");
 
     // Creando Funtion counter
     let totlqty = () => {
-      const numValue = inputQuantity.getAttribute("value");
-      const num = parseInt(numValue);
+      if(totalsQuantity == 0 ) {
+        
+        cartContainer.set
+      } else {
+        const numValue = inputQuantity.getAttribute("value");
+        const num = parseInt(numValue);
+  
+        totalsQuantity.push(num);
+  
+        const suma = totalsQuantity.reduce(
+          (anterior, actual) => anterior + actual,
+          0
+        );
+  
+        totalQuantity.innerText = suma;
+  
+        inputQuantity.addEventListener("change", (e) => {
+          e.preventDefault();
+          let oldTotal = parseInt(numValue);
+          let inputQty = document.getElementById("itemQuantity").value;
+          let num = parseInt((newTotal = inputQty));
+          if (num < oldTotal) {
+            const input = document.getElementById("itemQuantity");
+            input.setAttribute("value", num);
+          } else {
+            let newNumber = num;
+            let newTotalQuantity = parseInt(totalQuantity.innerText) - oldTotal;
+            let NewResult = newTotalQuantity + newNumber;
+            totalQuantity.innerText = NewResult;
+          }
+        });
+      }
 
-      totalsQuantity.push(num);
-
-      const suma = totalsQuantity.reduce(
-        (anterior, actual) => anterior + actual,
-        0
-      );
-
-      totalQuantity.innerText = suma;
-
-      inputQuantity.addEventListener("change", (e) => {
-        e.preventDefault();
-        let oldTotal = parseInt(numValue);
-        let inputQty = document.getElementById("itemQuantity").value;
-        let num = parseInt((newTotal = inputQty));
-        if (num < oldTotal) {
-          console.log("restado");
-          console.log(oldTotal - num);
-          console.log(totalQuantity);
-          const input = document.getElementById("itemQuantity");
-          input.setAttribute("value", num);
-        } else {
-          let newNumber = num;
-          let newTotalQuantity = parseInt(totalQuantity.innerText) - oldTotal;
-          let NewResult = newTotalQuantity + newNumber;
-          totalQuantity.innerText = NewResult;
-        }
-      });
     };
 
     totlqty();
@@ -162,8 +167,6 @@ getProducts(url).then((items) => {
       const parseLst = JSON.parse(lst);
       const color = cartItem.getAttribute("data-color");
       const newList = parseLst.filter((item) => item.dataColor !== color);
-      console.log(newList);
-
       localStorage.setItem("list", JSON.stringify(newList));
       location.reload();
     });

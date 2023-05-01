@@ -2,7 +2,7 @@ const url = "http://127.0.0.1:3000/api/products";
 
 getProducts(url).then(products => {
     products.map((item) => {
-        /* Creating the elements*/
+        // Creating the elements
         const section = document.getElementById("items");
         const a = document.createElement("a");
         const article = document.createElement("article");
