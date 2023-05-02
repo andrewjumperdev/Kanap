@@ -60,14 +60,14 @@ const validation = (name, last, address, city, email) => {
 // Input Validation
 const alertValidation = (input, msj) => {
   input.addEventListener("change", () => {
-    if (input.value > 100) {
-      const errMsgContainer = input.parentElement;
-      const errMsg = document.createElement("p");
+    const errMsgContainer = input.parentElement;
+    const errMsg = document.createElement("p");
+    if (input.value > 100 || input.value < 0) {
       errMsgContainer.append(errMsg);
       errMsg.setAttribute("style", "color:white");
       errMsg.innerHTML = msj;
     } else {
-      delete alert;
+      errMsgContainer.removeChild('p')
     }
   });
 };
