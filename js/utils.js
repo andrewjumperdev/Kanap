@@ -59,15 +59,16 @@ const validation = (name, last, address, city, email) => {
 
 // Input Validation
 const alertValidation = (input, msj) => {
-  input.addEventListener("change", () => {
+  input.addEventListener("change", (e) => {
+    console.log(e);
     const errMsgContainer = input.parentElement;
-    const errMsg = document.createElement("p");
+    let errMsg = document.createElement("p");
     if (input.value > 100 || input.value < 0) {
       errMsgContainer.append(errMsg);
       errMsg.setAttribute("style", "color:white");
       errMsg.innerHTML = msj;
     } else {
-      errMsgContainer.removeChild('p')
+      errMsg.setAttribute("style", "color:#3498db");
     }
   });
 };

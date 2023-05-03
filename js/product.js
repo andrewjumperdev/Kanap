@@ -30,7 +30,6 @@ alertValidation(quantity, "La quantité est comprise entre 1 et 100!");
 
 addToCart.addEventListener("click", () => {
   if (select.value === '') {
-    console.log('validationcorrecta')
     const errMsgContainer = container;
     const errMsg = document.createElement("span");
     errMsgContainer.append(errMsg);
