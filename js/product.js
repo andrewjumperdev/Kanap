@@ -14,8 +14,8 @@ const container = document.querySelector(".item__content__settings__quantity");
 const p = document.createElement("p");
 const option = select.innerHTML;
 
-p.setAttribute('style', 'overflow: hidden;box-shadow: 0 2px black;border-radius: 10px;padding: 10px;text-align: center;')
-p.innerText = 'Produit ajouté'
+p.setAttribute('style', 'padding: 10px;text-align: center;')
+p.innerText = 'Produit ajouté!'
 
 getProducts(url).then((data) => {
   for (value in data.colors) {
