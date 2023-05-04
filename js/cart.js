@@ -1,4 +1,4 @@
-const list = JSON.parse(localStorage.getItem("list"));
+let list = JSON.parse(localStorage.getItem("list"));
 const url = "http://127.0.0.1:3000/api/products";
 const cardForm = document.querySelector(".cart");
 const cartContainer = document.getElementById("cartAndFormContainer");
@@ -19,6 +19,7 @@ const p = document.createElement("p");
 const totalsQuantity = [];
 const totalPrices = [];
 
+
 if (!list || list.length === 0) {
   cardForm.hidden = true;
   p.innerText = `Il n'y a pas des items dans le panier`;
@@ -27,7 +28,6 @@ if (!list || list.length === 0) {
 } else {
   getProducts(url).then((items) => {
     for (let i = 0; i < list.length; i++) {
-
       // Creating Elements
       const element = list[i];
       const result = items.find((item) => item._id === element.productId);
@@ -37,6 +37,7 @@ if (!list || list.length === 0) {
       const img = document.createElement("img");
       const cartItemContent = document.createElement("div");
       const h2 = document.createElement("h2");
+      const p = document.createElement("p");
       const p2 = document.createElement("p");
       const cartItemContentDescription = document.createElement("div");
       const cartItemContentSettings = document.createElement("div");
@@ -122,7 +123,7 @@ if (!list || list.length === 0) {
       const itemQuantity = document.getElementById("itemQuantity");
       itemQuantity.addEventListener("change", (e) => {
         console.log(e)
-        prices();
+        prices()
       });
 
       alertValidation(itemQuantity, "La quantité est comprise entre 1 et 100!");

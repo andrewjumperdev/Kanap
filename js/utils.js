@@ -73,3 +73,4 @@ const alertValidation = (input, msj) => {
     }, 5000);      
   });
 };
+
