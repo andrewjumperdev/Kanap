@@ -22,6 +22,7 @@ const totalPrices = [];
 if (!list || list.length === 0) {
   cardForm.hidden = true;
   p.innerText = `Il n'y a pas des items dans le panier`;
+  p.setAttribute('style', 'display:flex;margin:0auto;justify-content:center;');
   cartContainer.append(p);
 } else {
   getProducts(url).then((items) => {
@@ -112,18 +113,15 @@ if (!list || list.length === 0) {
           ):( 
           totalPrices.push(priceProduct));
 
-        const sumaPrices = totalPrices.reduce(
-          (anterior, actual) => anterior + actual,
-          0
-        );
+        const sumaPrices = totalPrices.reduce((anterior, actual) => anterior + actual,0);
         totalPrice.innerText = sumaPrices;
       };
 
       prices();
 
       const itemQuantity = document.getElementById("itemQuantity");
-
       itemQuantity.addEventListener("change", (e) => {
+        console.log(e)
         prices();
       });
 
@@ -136,10 +134,7 @@ if (!list || list.length === 0) {
 
         totalsQuantity.push(num);
 
-        const suma = totalsQuantity.reduce(
-          (olnumber, number) => olnumber + number,
-          0
-        );
+        const suma = totalsQuantity.reduce((olnumber, number) => olnumber + number,0);
 
         totalQuantity.innerText = suma;
 
@@ -149,11 +144,10 @@ if (!list || list.length === 0) {
           let inputQty = document.getElementById("itemQuantity").value;
           let num = parseInt((newTotal = inputQty));
           if (num < oldTotal) {
-            console.log("restado");
-            console.log(oldTotal - num);
-            console.log(totalQuantity);
-            const input = document.getElementById("itemQuantity");
-            input.setAttribute("value", num);
+            let result = oldTotal - num;
+            const input = document.getElementById("totalQuantity");
+            input.setAttribute("value", result);
+            input.innerText = result
           } else {
             let newNumber = num;
             let newTotalQuantity = parseInt(totalQuantity.innerText) - oldTotal;

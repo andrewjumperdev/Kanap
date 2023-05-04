@@ -59,16 +59,17 @@ const validation = (name, last, address, city, email) => {
 
 // Input Validation
 const alertValidation = (input, msj) => {
-  input.addEventListener("change", (e) => {
-    console.log(e);
+  input.addEventListener("change", () => {
     const errMsgContainer = input.parentElement;
     let errMsg = document.createElement("p");
     if (input.value > 100 || input.value < 0) {
+      console.log(input)
       errMsgContainer.append(errMsg);
       errMsg.setAttribute("style", "color:white");
       errMsg.innerHTML = msj;
-    } else {
-      errMsg.setAttribute("style", "color:#3498db");
     }
+    setTimeout(() => {
+      errMsg.remove();
+    }, 5000);      
   });
 };

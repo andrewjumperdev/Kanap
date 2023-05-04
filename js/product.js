@@ -25,16 +25,22 @@ getProducts(url).then((data) => {
   img.setAttribute("src", data.imageUrl);
 });
 
-alertValidation(quantity, "La quantité est comprise entre 1 et 100!");
+
 
 
 addToCart.addEventListener("click", () => {
+
+  alertValidation(quantity, "La quantité est comprise entre 1 et 100!");
+
   if (select.value === '') {
     const errMsgContainer = container;
     const errMsg = document.createElement("span");
     errMsgContainer.append(errMsg);
-    errMsg.setAttribute("style", "color:white");
+    errMsg.setAttribute("style", "color:white;display:flex;margin:15px;");
     errMsg.innerHTML = 'Color is requiered';
+    setTimeout(() => {
+      errMsg.remove();
+    }, 5000);     
   }
  else {
   const data = {
