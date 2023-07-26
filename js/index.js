@@ -9,7 +9,7 @@ getProducts(url).then(products => {
         const img = document.createElement("img");
         const h3 = document.createElement("h3");
         const p = document.createElement("p");
-    
+        
         section.appendChild(a);
         a.appendChild(article);
         article.appendChild(img);
